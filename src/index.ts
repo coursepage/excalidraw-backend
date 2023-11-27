@@ -8,19 +8,19 @@ import express from "express";
 import socketIO, { Socket } from "socket.io";
 import * as prometheus from "socket.io-prometheus-metrics";
 
-const fs = require("fs");
-const server = require("https").createServer(https_options, app);
 const path = require("path");
-
-const serverDebug = debug("server");
+const fs = require("fs");
 const https_options = {
   key: fs.readFileSync(path.join(__dirname, "/server.key")),
   cert: fs.readFileSync(path.join(__dirname, "/server.cert")),
 };
+const app = express();
+const server = require("https").createServer(https_options, app);
+
+const serverDebug = debug("server");
 
 dotenv.config(process.env.NODE_ENV === "development" ? { path: ".env.development" } : { path: ".env.production" });
 
-const app = express();
 const port = process.env.PORT || 80; // default port to listen
 const users: Socket[] = [];
 const userLimit = Number(process.env.USER_LIMIT) || Infinity;
