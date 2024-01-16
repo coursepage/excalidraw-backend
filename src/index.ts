@@ -60,35 +60,23 @@ io.on("connection", (socket) => {
     serverDebug(`${socket.id} has joined ${roomID} for url ${socket.conn.request.url}`);
     socket.join(roomID);
 
-        users.push(socket);
-        socket.on('close', () => {
-            users.splice(users.indexOf(socket), 1);
-        });
-
-        const clients = Object.keys(io.sockets.adapter.rooms[roomID].sockets);
-
-        if (clients.length > userLimit) {
-            clients.forEach((clientKey: string) => {
-                const clientSocket = io.sockets.connected[clientKey];
-
-                serverDebug(`${clientSocket} has left the ${roomID} room because the user limit was reached.`);
-                clientSocket.leave(roomID);
-            });
-
-            return;
-        }
-
-        if (io.sockets.adapter.rooms[roomID].length <= 1) {
-            io.to(`${socket.id}`).emit('first-in-room');
-        } else {
-            socket.broadcast.to(roomID).emit('new-user', socket.id);
-        }
-        io.in(roomID).emit(
-            'room-user-change',
-            Object.keys(io.sockets.adapter.rooms[roomID].sockets)
-        );
+    users.push(socket);
+    socket.on("close", () => {
+      users.splice(users.indexOf(socket), 1);
     });
 
+    const clients = Object.keys(io.sockets.adapter.rooms[roomID].sockets);
+
+    if (clients.length > userLimit) {
+      clients.forEach((clientKey: string) => {
+        const clientSocket = io.sockets.connected[clientKey];
+
+        serverDebug(`${clientSocket} has left the ${roomID} room because the user limit was reached.`);
+        clientSocket.leave(roomID);
+      });
+
+      return;
+    }
 
     if (io.sockets.adapter.rooms[roomID].length <= 1) {
       io.to(`${socket.id}`).emit("first-in-room");
