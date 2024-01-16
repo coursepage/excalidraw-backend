@@ -11,8 +11,8 @@ import * as prometheus from "socket.io-prometheus-metrics";
 const path = require("path");
 const fs = require("fs");
 const https_options = {
-  key: fs.readFileSync(path.join(__dirname, "/server.key")),
-  cert: fs.readFileSync(path.join(__dirname, "/server.cert")),
+  key: fs.readFileSync(path.join(__dirname, "../server.key")),
+  cert: fs.readFileSync(path.join(__dirname, "../server.cert")),
 };
 const app = express();
 const server = require("https").createServer(https_options, app);
